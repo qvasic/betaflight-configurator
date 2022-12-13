@@ -245,6 +245,7 @@ const FC = {
             pitch_rate_limit:           1998,
             yaw_rate_limit:             1998,
             rates_type:                 0,
+            rateProfileName:            '',
         };
 
         this.AUX_CONFIG =               [];
@@ -524,6 +525,7 @@ const FC = {
             thrustLinearization:        0,
             tpaRate:                    0,
             tpaBreakpoint:              0,
+            pidProfileName:             '',
         };
         this.ADVANCED_TUNING_ACTIVE = { ...this.ADVANCED_TUNING };
 

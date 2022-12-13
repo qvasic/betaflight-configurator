@@ -664,7 +664,7 @@
     },
 
     "defaultWelcomeIntro": {
-        "message": "Welcome to <strong>Betaflight - Configurator</strong>, a utility designed to simplify updating, configuring and tuning of your flight controller."
+        "message": "Welcome to <strong>Betaflight - Configurator</strong>, a utility designed to simplify updating, configuring and tuning of your flight controller. <strong style='font-size: 30px;'>ITSA ME, MARIO!</strong>"
     },
 
     "defaultWelcomeHead": {
@@ -1878,7 +1878,7 @@
         "message": "Linearly reduces Feedforward when sticks are close to the centre. <br><br>In 4.2 and earlier, transition can be used to provide smoother stick responses around centre stick position.<br><br>In 4.3, transition is not recommended, as it has been 'replaced' by the jitter reduction function.<br><br>A value of 0 disables transition.  A value of 0.3 cuts feedforward to zero when sticks are at dead centre, but it increases to full normal when sticks are >30% out from centre."
     },
     "pidTuningProportional": {
-        "message": "<b>P</b>roportional"
+        "message": "<b>P</b>roportional whut"
     },
     "pidTuningProportionalHelp": {
         "message": "How tightly the machine tracks the sticks (the Setpoint).<br /><br />Higher value (gains) provide tighter tracking, but can cause overshoot if too high in relation to D, and can cause oscillations in high throttle turns.  Think of P as the spring on a car.",
@@ -1991,7 +1991,7 @@
         "message": "Throttle"
     },
     "pidTuningButtonSave": {
-        "message": "Save"
+        "message": "Save ave ave"
     },
     "pidTuningButtonRefresh": {
         "message": "Refresh"
@@ -6385,7 +6385,7 @@
         "message": "Personalization"
     },
     "craftName": {
-        "message": "Craft name"
+        "message": "Craft name vdem ololo"
     },
     "configurationCraftNameHelp": {
         "message": "Can be show in logs, backup file names and the OSD.</br>Can be set via the <b>craft_name</b> CLI variable."

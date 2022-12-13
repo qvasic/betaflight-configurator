@@ -28,6 +28,7 @@ const pid_tuning = {
 
 pid_tuning.initialize = function (callback) {
 
+    console.log("pid tuning init start");
     const self = this;
 
     if (GUI.active_tab !== 'pid_tuning') {
@@ -49,6 +50,8 @@ pid_tuning.initialize = function (callback) {
         .then(() => MSP.promise(MSPCodes.MSP_FILTER_CONFIG))
         .then(() => MSP.promise(MSPCodes.MSP_RC_DEADBAND))
         .then(() => MSP.promise(MSPCodes.MSP_MOTOR_CONFIG))
+        .then(() => MSP.promise(MSPCodes.MSP2_GET_TEXT, mspHelper.crunch(MSPCodes.MSP2_GET_TEXT, MSPCodes.PID_PROFILE_NAME)))
+        .then(() => MSP.promise(MSPCodes.MSP2_GET_TEXT, mspHelper.crunch(MSPCodes.MSP2_GET_TEXT, MSPCodes.RATE_PROFILE_NAME)))
         .then(() => {
             let promise;
             if (semver.gte(FC.CONFIG.apiVersion, API_VERSION_1_44)) {
@@ -59,6 +62,8 @@ pid_tuning.initialize = function (callback) {
             })
         .then(() => MSP.send_message(MSPCodes.MSP_MIXER_CONFIG, false, false, load_html));
 
+    console.log("pid_profile_name from pid_tuning.js: ", FC.ADVANCED_TUNING.pidProfileName);
+
     function load_html() {
         $('#content').load("./tabs/pid_tuning.html", process_html);
     }
@@ -68,6 +73,17 @@ pid_tuning.initialize = function (callback) {
     function pid_and_rc_to_form() {
         self.setProfile();
         self.setRateProfile();
+
+
+        if (semver.gte(FC.CONFIG.apiVersion, "1.44.0")) {
+            $('input[name="pidProfileName"]').val(FC.CONFIG.pidProfileNames[FC.CONFIG.profile]);
+            $('input[name="rateProfileName"]').val(FC.CONFIG.rateProfileNames[FC.CONFIG.rateProfile]);
+        }
+        else
+        {
+            $('.rateProfileName').hide();
+        }
+
 
         // Fill in the data from PIDs array for each pid name
         FC.PID_NAMES.forEach(function(elementPid, indexPid) {
@@ -1022,6 +1038,18 @@ pid_tuning.initialize = function (callback) {
                 }
             });
         });
+
+
+
+
+        if (semver.gte(FC.CONFIG.apiVersion, "1.44.0")) {
+            FC.CONFIG.pidProfileNames[FC.CONFIG.profile] = $('input[name="pidProfileName"]').val().trim();
+            FC.CONFIG.rateProfileNames[FC.CONFIG.rateProfile] = $('input[name="rateProfileName"]').val().trim();
+        }
+
+
+
+
 
         // catch RC_tuning changes
         const pitch_rate_e = $('.pid_tuning input[name="pitch_rate"]');
@@ -2223,11 +2251,25 @@ pid_tuning.initialize = function (callback) {
 
         // update == save.
         $('a.update').click(function () {
+            console.log( "pid tuning save start" );
             form_to_pid_and_rc();
             self.updating = true;
 
             MSP.promise(MSPCodes.MSP_SET_PID, mspHelper.crunch(MSPCodes.MSP_SET_PID))
             .then(() => MSP.promise(MSPCodes.MSP_SET_PID_ADVANCED, mspHelper.crunch(MSPCodes.MSP_SET_PID_ADVANCED)))
+
+
+
+
+
+            //.then(() => MSP.promise(MSPCodes.MSP_SET_PID_PROFILE_NAME, mspHelper.crunch(MSPCodes.MSP_SET_PID_PROFILE_NAME)))
+            //.then(() => MSP.promise(MSPCodes.MSP_SET_RATE_PROFILE_NAME, mspHelper.crunch(MSPCodes.MSP_SET_RATE_PROFILE_NAME)))
+            .then(() => MSP.promise(MSPCodes.MSP2_SET_TEXT, mspHelper.crunch(MSPCodes.MSP2_SET_TEXT, MSPCodes.PID_PROFILE_NAME)))
+            .then(() => MSP.promise(MSPCodes.MSP2_SET_TEXT, mspHelper.crunch(MSPCodes.MSP2_SET_TEXT, MSPCodes.RATE_PROFILE_NAME)))
+
+
+
+
             .then(() => {
                 self.updatePIDColors();
                 return MSP.promise(MSPCodes.MSP_SET_FILTER_CONFIG, mspHelper.crunch(MSPCodes.MSP_SET_FILTER_CONFIG));
@@ -2246,8 +2288,17 @@ pid_tuning.initialize = function (callback) {
                 self.refresh();
             });
 
+
+
+
+
+
+
+
             analytics.sendSaveAndChangeEvents(analytics.EVENT_CATEGORIES.FLIGHT_CONTROLLER, self.analyticsChanges, 'pid_tuning');
             self.analyticsChanges = {};
+
+            console.log( "pid tuning saving end" );
         });
 
         // Setup model for rates preview
@@ -2269,6 +2320,8 @@ pid_tuning.initialize = function (callback) {
         GUI.content_ready(callback);
         TABS.pid_tuning.isHtmlProcessing = false;
     }
+
+    console.log("pid tuning init end");
 };
 
 pid_tuning.getReceiverData = function () {

@@ -28,7 +28,6 @@ const pid_tuning = {
 
 pid_tuning.initialize = function (callback) {
 
-    console.log("pid tuning init start");
     const self = this;
 
     if (GUI.active_tab !== 'pid_tuning') {
@@ -61,8 +60,6 @@ pid_tuning.initialize = function (callback) {
             return promise;
             })
         .then(() => MSP.send_message(MSPCodes.MSP_MIXER_CONFIG, false, false, load_html));
-
-    console.log("pid_profile_name from pid_tuning.js: ", FC.ADVANCED_TUNING.pidProfileName);
 
     function load_html() {
         $('#content').load("./tabs/pid_tuning.html", process_html);
@@ -2251,25 +2248,13 @@ pid_tuning.initialize = function (callback) {
 
         // update == save.
         $('a.update').click(function () {
-            console.log( "pid tuning save start" );
             form_to_pid_and_rc();
             self.updating = true;
 
             MSP.promise(MSPCodes.MSP_SET_PID, mspHelper.crunch(MSPCodes.MSP_SET_PID))
             .then(() => MSP.promise(MSPCodes.MSP_SET_PID_ADVANCED, mspHelper.crunch(MSPCodes.MSP_SET_PID_ADVANCED)))
-
-
-
-
-
-            //.then(() => MSP.promise(MSPCodes.MSP_SET_PID_PROFILE_NAME, mspHelper.crunch(MSPCodes.MSP_SET_PID_PROFILE_NAME)))
-            //.then(() => MSP.promise(MSPCodes.MSP_SET_RATE_PROFILE_NAME, mspHelper.crunch(MSPCodes.MSP_SET_RATE_PROFILE_NAME)))
             .then(() => MSP.promise(MSPCodes.MSP2_SET_TEXT, mspHelper.crunch(MSPCodes.MSP2_SET_TEXT, MSPCodes.PID_PROFILE_NAME)))
             .then(() => MSP.promise(MSPCodes.MSP2_SET_TEXT, mspHelper.crunch(MSPCodes.MSP2_SET_TEXT, MSPCodes.RATE_PROFILE_NAME)))
-
-
-
-
             .then(() => {
                 self.updatePIDColors();
                 return MSP.promise(MSPCodes.MSP_SET_FILTER_CONFIG, mspHelper.crunch(MSPCodes.MSP_SET_FILTER_CONFIG));
@@ -2288,17 +2273,8 @@ pid_tuning.initialize = function (callback) {
                 self.refresh();
             });
 
-
-
-
-
-
-
-
             analytics.sendSaveAndChangeEvents(analytics.EVENT_CATEGORIES.FLIGHT_CONTROLLER, self.analyticsChanges, 'pid_tuning');
             self.analyticsChanges = {};
-
-            console.log( "pid tuning saving end" );
         });
 
         // Setup model for rates preview
@@ -2320,8 +2296,6 @@ pid_tuning.initialize = function (callback) {
         GUI.content_ready(callback);
         TABS.pid_tuning.isHtmlProcessing = false;
     }
-
-    console.log("pid tuning init end");
 };
 
 pid_tuning.getReceiverData = function () {
